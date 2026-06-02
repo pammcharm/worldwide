@@ -235,7 +235,13 @@
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors">
                             {% if user.avatar %}
-                            <img src="{{ user.avatar.url }}" alt="" class="w-8 h-8 rounded-full object-cover">
+                            <span class="relative">
+                                <img src="{{ user.avatar.url }}" alt="" class="w-8 h-8 rounded-full object-cover"
+                                     onerror="this.onerror=null; this.style.display='none'; this.parentElement.querySelector('.avatar-fallback').style.display='flex';">
+                                <span class="avatar-fallback hidden w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-accent-400 flex items-center justify-center text-white text-sm font-bold">
+                                    {{ user.first_name|first|default:user.username|first|upper }}
+                                </span>
+                            </span>
                             {% else %}
                             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-accent-400 flex items-center justify-center text-white text-sm font-bold">
                                 {{ user.first_name|first|default:user.username|first|upper }}

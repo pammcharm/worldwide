@@ -27,8 +27,6 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 else:
-    # Production: serve media files if not using S3
+    # Production: serve media files locally when not using S3 storage.
     if not settings.USE_S3_STORAGE:
-        urlpatterns += [
-            re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-        ]
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

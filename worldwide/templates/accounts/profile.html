@@ -33,7 +33,13 @@
             <!-- Avatar -->
             <div class="bg-white rounded-2xl border border-gray-100 p-6 text-center">
                 {% if user.avatar %}
-                <img src="{{ user.avatar.url }}" alt="" class="w-20 h-20 rounded-full object-cover mx-auto mb-3">
+                <div class="relative mx-auto mb-3">
+                    <img src="{{ user.avatar.url }}" alt="" class="w-20 h-20 rounded-full object-cover mx-auto mb-3"
+                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.querySelector('.avatar-fallback').style.display='flex';">
+                    <div class="avatar-fallback hidden w-20 h-20 rounded-full bg-gradient-to-br from-brand-400 to-accent-400 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
+                        {{ user.first_name|first|default:user.username|first|upper }}
+                    </div>
+                </div>
                 {% else %}
                 <div class="w-20 h-20 rounded-full bg-gradient-to-br from-brand-400 to-accent-400 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
                     {{ user.first_name|first|default:user.username|first|upper }}

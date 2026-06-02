@@ -177,9 +177,11 @@ WHITENOISE_INDEX_FILE = True
 # Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
 
 # Storage configuration
 USE_S3_STORAGE = bool_config("USE_S3_STORAGE", default=False)
+DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 if USE_S3_STORAGE:
     # Configure S3/Supabase Storage backend

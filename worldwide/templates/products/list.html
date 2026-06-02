@@ -39,12 +39,12 @@
         <div class="group bg-white rounded-2xl border border-gray-100 overflow-hidden card-hover">
             <a href="{{ product.get_absolute_url }}" class="block relative aspect-square overflow-hidden bg-gray-100">
                 {% with primary_image=product.images.all|first %}
-                {% if primary_image and primary_image.image %}
+                {% if primary_image and primary_image.image and primary_image.image.url %}
                     <img 
                         src="{{ primary_image.image.url }}" 
                         alt="{{ product.name }}" 
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 {% if product.is_import %}filter grayscale blur-[1px]{% endif %}"
-                        onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\"w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-50 to-pink-50\"><i data-lucide=\"image\" class=\"w-12 h-12 text-gray-300\"></i></div>'">
+                        onerror="this.onerror=null; this.parentElement.innerHTML=`<div class='w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-50 to-pink-50'><i data-lucide='image' class='w-12 h-12 text-gray-300'></i></div>`" />
                 {% else %}
                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-50 to-pink-50">
                     <div class="text-center">
