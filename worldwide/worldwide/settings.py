@@ -16,8 +16,12 @@ def bool_config(name, default=False):
 
 
 SECRET_KEY = config("SECRET_KEY", default="django-insecure-dev-key-change-in-production")
-DEBUG = bool_config("DEBUG", default=True)
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1,0.0.0.0", cast=Csv())
+DEBUG = bool_config("DEBUG", default=False)
+ALLOWED_HOSTS = config(
+    "ALLOWED_HOSTS",
+    default="localhost,127.0.0.1,0.0.0.0,.onrender.com,worldwide-g58k.onrender.com",
+    cast=Csv(),
+)
 
 
 def database_config(default_sqlite_path):
