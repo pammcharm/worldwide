@@ -1,0 +1,134 @@
+{% extends "layouts/base.html" %}
+{% load static humanize %}
+
+{% block title %}Processing Payment - {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center min-h-screen flex items-center">
+    <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 border border-gray-100 w-full">
+        <!-- MoMo Icon -->
+        <div class="w-20 h-20 rounded-2xl {% if payment.method == 'mtn_momo' %}bg-green-100{% else %}bg-red-100{% endif %} flex items-center justify-center mx-auto mb-6">
+            <i data-lucide="smartphone" class="w-10 h-10 {% if payment.method == 'mtn_momo' %}text-green-600{% else %}text-red-600{% endif %}"></i>
+        </div>
+
+        <h1 class="font-display text-xl sm:text-2xl font-bold mb-2">
+            <span id="status-text">
+            {% if payment.status == 'completed' %}Payment Confirmed{% elif payment.status == 'failed' %}Payment Failed{% else %}Payment Request Sent{% endif %}
+            </span>
+        </h1>
+        <p class="text-gray-500 text-sm mb-6">
+            You are about to pay <strong>{{ order.total|floatformat:0|intcomma }} RWF</strong> via <span id="method-text">{{ payment.get_method_display }}</span>
+        </p>
+
+        <!-- Payment Details -->
+        <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left">
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-500">Method</span>
+                <span class="font-medium">{{ payment.get_method_display }}</span>
+            </div>
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-500">Phone</span>
+                <span class="font-medium">{{ payment.phone_number }}</span>
+            </div>
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-500">Order</span>
+                <span class="font-medium">{{ order.order_number }}</span>
+            </div>
+            {% if payment.transaction_id %}
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-500">Paypack Ref</span>
+                <span class="font-medium text-right break-all">{{ payment.transaction_id }}</span>
+            </div>
+            {% endif %}
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-500">Status</span>
+                <span class="font-medium">{{ payment.get_status_display }}</span>
+            </div>
+            <div class="border-t border-gray-200 mt-3 pt-3 flex justify-between">
+                <span class="font-semibold">Amount</span>
+                <span class="font-bold text-lg text-brand-600">{{ order.total|floatformat:0|intcomma }} RWF</span>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-left">
+            <p class="text-sm text-blue-700">
+                <i data-lucide="info" class="inline w-4 h-4 mr-1"></i>
+                <span id="instruction-text">
+                {% if payment.status == 'pending' %}
+                Check your phone for the Paypack {{ payment.get_method_display }} popup. This page will update automatically after you confirm payment.
+                {% elif payment.status == 'completed' %}
+                Paypack confirmed your payment. Your order is now being processed.
+                {% else %}
+                Paypack marked this payment as failed. You can try again with a different number.
+                {% endif %}
+                </span>
+            </p>
+        </div>
+
+        <!-- Loading indicator -->
+        {% if payment.status == 'pending' %}
+        <div class="mb-6 flex justify-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-brand-500"></div>
+        </div>
+        <p class="text-sm text-gray-500 mb-6">Waiting for payment confirmation...</p>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <a href="{% url 'payments:pay' order.order_number %}" class="px-4 py-3 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors order-2 sm:order-1">
+                Change Number
+            </a>
+            <a href="{% url 'orders:detail' order.order_number %}" class="px-4 py-3 btn-primary text-white font-semibold rounded-xl order-1 sm:order-2">
+                View Order
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Auto-refresh script for payment status polling -->
+<script>
+(function() {
+    const paymentStatus = "{{ payment.status }}";
+    const orderId = "{{ order.order_number }}";
+    
+    if (paymentStatus === 'pending') {
+        // Poll for status updates every 3 seconds
+        const pollInterval = setInterval(() => {
+            fetch(`/api/payments/check-status/{{ order.order_number }}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'pending') {
+                        clearInterval(pollInterval);
+                        // Update the page with the new status
+                        const statusText = data.status === 'completed' 
+                            ? 'Payment Confirmed' 
+                            : 'Payment Failed';
+                        document.getElementById('status-text').textContent = statusText;
+                        document.getElementById('instruction-text').innerHTML = 
+                            data.status === 'completed' 
+                                ? 'Paypack confirmed your payment. Your order is now being processed.'
+                                : 'Paypack marked this payment as failed. You can try again with a different number.';
+                        
+                        // Hide loading indicator
+                        const spinner = document.querySelector('[class*="animate-spin"]');
+                        if (spinner) spinner.remove();
+                        const waitingText = document.querySelector('[class*="text-gray-500"][class*="mb-6"]');
+                        if (waitingText) waitingText.remove();
+                        
+                        // Refresh page after 2 seconds
+                        setTimeout(() => window.location.reload(), 2000);
+                    }
+                })
+                .catch(err => console.error('Error checking payment status:', err));
+        }, 3000);
+    }
+})();
+</script>
+
+{% endblock %}

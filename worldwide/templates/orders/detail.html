@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+{% block title %}Order {{ order.order_number }} - WorldWide{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <a href="{% url "orders:list" %}" class="text-sm text-brand-600 hover:underline flex items-center gap-1 mb-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Orders
+            </a>
+            <h1 class="font-display text-3xl font-bold">Order {{ order.order_number }}</h1>
+            <p class="text-sm text-gray-500 mt-1">Placed on {{ order.created_at|date:"F d, Y \a\t g:i A" }}</p>
+        </div>
+        <span class="px-4 py-2 rounded-full text-sm font-medium
+            {% if order.status == "delivered" %}bg-green-100 text-green-700
+            {% elif order.status == "shipped" %}bg-blue-100 text-blue-700
+            {% elif order.status == "cancelled" %}bg-red-100 text-red-700
+            {% elif order.status == "processing" %}bg-yellow-100 text-yellow-700
+            {% else %}bg-gray-100 text-gray-700{% endif %}">
+            {{ order.get_status_display }}
+        </span>
+    </div>
+    
+    <!-- Order Items -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
+        <h2 class="font-semibold text-lg mb-4">Items</h2>
+        <div class="space-y-4">
+            {% for item in order.items.all %}
+            <div class="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+                <div>
+                    <p class="font-medium text-sm">{{ item.product_name }}</p>
+                    <p class="text-xs text-gray-400">SKU: {{ item.product_sku }} | Qty: {{ item.quantity }}</p>
+                </div>
+                <span class="font-medium">${{ item.total }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-100 space-y-2">
+            <div class="flex justify-between text-sm">
+                <span class="text-gray-500">Subtotal</span>
+                <span>${{ order.subtotal }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-gray-500">Shipping</span>
+                <span>${{ order.shipping_cost }}</span>
+            </div>
+            {% if order.discount > 0 %}
+            <div class="flex justify-between text-sm text-green-600">
+                <span>Discount</span>
+                <span>-${{ order.discount }}</span>
+            </div>
+            {% endif %}
+            <div class="flex justify-between font-bold text-lg pt-2 border-t border-gray-100">
+                <span>Total</span>
+                <span>${{ order.total }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shipping Address -->
+    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+        <h2 class="font-semibold text-lg mb-4">Shipping Address</h2>
+        <p class="text-sm text-gray-700">{{ order.shipping_name }}</p>
+        <p class="text-sm text-gray-500">{{ order.shipping_street }}</p>
+        <p class="text-sm text-gray-500">{{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal_code }}</p>
+        <p class="text-sm text-gray-500">{{ order.shipping_country }}</p>
+    </div>
+    
+    {% if order.status == "pending" or order.status == "confirmed" %}
+    <div class="mt-6 text-center">
+        <a href="{% url "orders:cancel" order.order_number %}" class="text-sm text-red-500 hover:underline">Cancel Order</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

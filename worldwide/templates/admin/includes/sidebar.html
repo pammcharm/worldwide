@@ -1,0 +1,76 @@
+<aside id="worldwide-admin-sidebar">
+    <a href="{% url 'admin:index' %}" class="ww-sidebar-brand">
+        <span class="ww-sidebar-logo">W</span>
+        <span class="ww-sidebar-name">World<span>Wide</span></span>
+    </a>
+
+    <nav class="ww-sidebar-nav" aria-label="Admin navigation">
+        <div class="ww-nav-section">
+            <div class="ww-nav-title">Main</div>
+            <a href="{% url 'admin:index' %}" class="ww-nav-item {% if request.path == '/admin/' %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a>
+            <a href="{% url 'admin:orders_order_changelist' %}" class="ww-nav-item {% if '/admin/orders/' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Orders
+            </a>
+            <a href="{% url 'admin:accounts_user_changelist' %}" class="ww-nav-item {% if '/admin/accounts/' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Customers
+            </a>
+        </div>
+
+        <div class="ww-nav-section">
+            <div class="ww-nav-title">Catalog</div>
+            <a href="{% url 'admin:products_product_changelist' %}" class="ww-nav-item {% if '/admin/products/product' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>
+                Products
+            </a>
+            <a href="{% url 'admin:products_category_changelist' %}" class="ww-nav-item {% if '/admin/products/category' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Categories
+            </a>
+            <a href="{% url 'admin:products_brand_changelist' %}" class="ww-nav-item {% if '/admin/products/brand' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Brands
+            </a>
+            <a href="{% url 'admin:orders_coupon_changelist' %}" class="ww-nav-item {% if '/admin/orders/coupon' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M20.59 13.41 13.41 20.59a2 2 0 0 1-2.82 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><path d="M7 7h.01"/></svg>
+                Coupons
+            </a>
+        </div>
+
+        <div class="ww-nav-section">
+            <div class="ww-nav-title">Operations</div>
+            <a href="{% url 'admin:payments_payment_changelist' %}" class="ww-nav-item {% if '/admin/payments/' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                Payments
+            </a>
+            <a href="{% url 'admin:shipping_shippingzone_changelist' %}" class="ww-nav-item {% if '/admin/shipping/' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                Shipping
+            </a>
+            <a href="{% url 'admin:reviews_review_changelist' %}" class="ww-nav-item {% if '/admin/reviews/' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Reviews
+            </a>
+        </div>
+
+        <div class="ww-nav-section">
+            <div class="ww-nav-title">Content</div>
+            <a href="{% url 'admin:core_banner_changelist' %}" class="ww-nav-item {% if '/admin/core/banner' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                Banners
+            </a>
+            <a href="{% url 'admin:core_productlinkrequest_changelist' %}" class="ww-nav-item {% if '/admin/core/productlinkrequest' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                Link Requests
+            </a>
+            <a href="{% url 'admin:core_sitesettings_changelist' %}" class="ww-nav-item {% if '/admin/core/sitesettings' in request.path %}active{% endif %}">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.38.5.96.8 1.6.8H21a2 2 0 0 1 0 4h-.09c-.64 0-1.22.3-1.51 1.2z"/></svg>
+                Site Settings
+            </a>
+        </div>
+    </nav>
+</aside>

@@ -1,0 +1,289 @@
+{% extends "layouts/base.html" %}
+{% load static humanize %}
+
+{% block title %}WorldWide - Global Import & Local Delivery Platform{% endblock %}
+{% block meta_desc %}Buy products from Alibaba, Amazon, eBay with automatic price calculation to RWF. Local stock available for instant delivery in Kigali.{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-gradient-to-br from-brand-50 via-white to-blue-50">
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-100 rounded-full opacity-30 blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-100 rounded-full opacity-30 blur-3xl"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="animate-slide-up">
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-100 text-brand-700 text-sm font-medium mb-4">
+                    <svg class="w-4 h-4"><use href="#icon-link"/></svg>
+                    Your Global Shopping Partner in Kigali
+                </span>
+                <h1 class="font-display text-4xl sm:text-5xl font-bold leading-tight mb-4">
+                    Shop <span class="gradient-text">Worldwide</span>,<br>
+                    Delivered to <span class="text-blue-600">Kigali</span>
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed mb-6 max-w-lg">
+                    Paste any product link from Alibaba, Amazon, eBay — we calculate the final price to Kigali instantly. No manual math.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{% url 'products:list' %}?type=import" class="inline-flex items-center gap-2 px-6 py-3 btn-primary text-white font-semibold rounded-full shadow-lg">
+                        <svg class="w-4 h-4"><use href="#icon-plane"/></svg> Import Products
+                    </a>
+                    <a href="{% url 'products:list' %}?type=local" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full shadow-lg transition-colors">
+                        <svg class="w-4 h-4"><use href="#icon-zap"/></svg> Local Stock
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Link Paste CTA -->
+            <div class="relative">
+                <form method="post" action="{% url 'core:product_link_request' %}" class="bg-white rounded-3xl shadow-2xl p-6 border border-brand-100">
+                    {% csrf_token %}
+                    <h3 class="font-display font-bold text-lg mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-brand-600"><use href="#icon-link"/></svg>
+                        Paste a Product Link
+                    </h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Product URL</label>
+                            <div class="relative">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"><use href="#icon-link"/></svg>
+                                <input type="url" name="product_url" required placeholder="https://www.alibaba.com/product/..." class="w-full pl-9 pr-3 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Name</label>
+                                <input type="text" name="contact_name" value="{% if user.is_authenticated %}{{ user.full_name }}{% endif %}" placeholder="Your name" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Phone</label>
+                                <input type="tel" name="contact_phone" value="{% if user.is_authenticated %}{{ user.phone }}{% endif %}" placeholder="07XXXXXXXX" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100">
+                            </div>
+                        </div>
+                        <textarea name="notes" rows="2" placeholder="Color, size, quantity, or any details" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm outline-none resize-none focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100"></textarea>
+                        <button type="submit" class="w-full px-4 py-3 btn-primary text-white font-semibold rounded-xl flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4"><use href="#icon-plane"/></svg>
+                            Request RWF Quote
+                        </button>
+                        <p class="text-xs text-gray-400 text-center">Alibaba, Amazon, eBay, Trendyol, AliExpress and more.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Banner -->
+<section class="py-8 bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="flex items-center gap-3 p-3">
+                <div class="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-brand-600"><use href="#icon-link"/></svg>
+                </div>
+                <div><p class="font-semibold text-sm">Paste Any Link</p><p class="text-xs text-gray-500">Alibaba, Amazon, eBay</p></div>
+            </div>
+            <div class="flex items-center gap-3 p-3">
+                <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="calculator" class="w-5 h-5 text-blue-600"></i>
+                </div>
+                <div><p class="font-semibold text-sm">Auto Price Calc</p><p class="text-xs text-gray-500">USD to RWF instantly</p></div>
+            </div>
+            <div class="flex items-center gap-3 p-3">
+                <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-green-600"><use href="#icon-zap"/></svg>
+                </div>
+                <div><p class="font-semibold text-sm">MoMo Payment</p><p class="text-xs text-gray-500">MTN & Airtel Money</p></div>
+            </div>
+            <div class="flex items-center gap-3 p-3">
+                <div class="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="truck" class="w-5 h-5 text-pink-600"></i>
+                </div>
+                <div><p class="font-semibold text-sm">Delivered to You</p><p class="text-xs text-gray-500">Track every step</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Import Products Section -->
+<section class="py-14 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium mb-2">
+                    <svg class="w-3 h-3"><use href="#icon-plane"/></svg> Import On-Demand
+                </span>
+                <h2 class="font-display text-2xl font-bold">Products from Overseas</h2>
+                <p class="text-gray-500 text-sm mt-1">Sourced from Alibaba, Amazon, eBay, Trendyol. Delivered in 10-21 days.</p>
+            </div>
+            <a href="{% url 'products:list' %}?type=import" class="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-brand-600 hover:text-brand-700">
+                View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for product in import_products %}
+            <div class="group bg-white rounded-2xl border border-blue-100 overflow-hidden card-hover">
+                <a href="{{ product.get_absolute_url }}" class="block relative aspect-square overflow-hidden bg-gray-100">
+                    {% with img=product.images.all|first %}
+                    {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter grayscale blur-[0.8px]" loading="lazy">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-200">
+                        <img src="https://source.unsplash.com/400x400/?{{ product.name|urlencode }},product" alt="{{ product.name }}" class="w-full h-full object-cover filter grayscale blur-[0.8px]" loading="lazy">
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    <span class="absolute top-3 left-3 px-2.5 py-1 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                        <svg class="w-3 h-3"><use href="#icon-plane"/></svg>Import
+                    </span>
+                    {% if product.is_new %}
+                    <span class="absolute top-3 right-3 px-2.5 py-1 bg-brand-500 text-white text-xs font-bold rounded-full">NEW</span>
+                    {% endif %}
+                </a>
+                <div class="p-4">
+                    <p class="text-xs text-gray-400 mb-1">{% if product.category.icon %}<svg class="w-3 h-3 inline mr-0.5"><use href="#icon-package"/></svg>{% endif %}{{ product.category.name }}</p>
+                    <a href="{{ product.get_absolute_url }}">
+                        <h3 class="font-medium text-sm text-gray-800 hover:text-brand-600 transition-colors line-clamp-2">{{ product.name }}</h3>
+                    </a>
+                    <p class="text-xs mt-1.5 text-blue-600 flex items-center gap-1">
+                        <svg class="w-3 h-3"><use href="#icon-clock"/></svg>{{ product.trust_label }}
+                    </p>
+                    <div class="flex items-center gap-2 mt-3">
+                        <span class="font-bold text-gray-900">{% if product.calculated_price_rwf %}{{ product.calculated_price_rwf|floatformat:0|intcomma }}{% else %}{{ product.price|floatformat:0|intcomma }}{% endif %} RWF</span>
+                    </div>
+                    {% if product.source_url %}
+                    <a href="{{ product.source_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 mt-2 text-xs text-blue-500 hover:text-brand-600 transition-colors">
+                        <svg class="w-3 h-3"><use href="#icon-external-link"/></svg> View on {{ product.get_origin_platform_display }}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3"><use href="#icon-plane"/></svg>
+                <p class="text-gray-500">No import products yet. Add products in the admin panel.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Local Stock Section -->
+<section class="py-14 bg-green-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium mb-2">
+                    <svg class="w-3 h-3"><use href="#icon-zap"/></svg> Local Stock — Instant Delivery
+                </span>
+                <h2 class="font-display text-2xl font-bold">Available in Kigali Now</h2>
+                <p class="text-gray-500 text-sm mt-1">Already in stock. Same-day delivery or pickup available.</p>
+            </div>
+            <a href="{% url 'products:list' %}?type=local" class="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700">
+                View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for product in local_products %}
+            <div class="group bg-white rounded-2xl border border-green-100 overflow-hidden card-hover">
+                <a href="{{ product.get_absolute_url }}" class="block relative aspect-square overflow-hidden bg-gray-100">
+                    {% with img=product.images.all|first %}
+                    {% if img %}
+                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50">
+                        <img src="https://source.unsplash.com/400x400/?{{ product.name|urlencode }},product" alt="{{ product.name }}" class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    <span class="absolute top-3 left-3 px-2.5 py-1 bg-green-600 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                        <svg class="w-3 h-3"><use href="#icon-zap"/></svg>Local
+                    </span>
+                </a>
+                <div class="p-4">
+                    <p class="text-xs text-gray-400 mb-1">{{ product.category.name }}</p>
+                    <a href="{{ product.get_absolute_url }}">
+                        <h3 class="font-medium text-sm text-gray-800 hover:text-green-600 transition-colors line-clamp-2">{{ product.name }}</h3>
+                    </a>
+                    <p class="text-xs mt-1.5 text-green-600 flex items-center gap-1">
+                        <svg class="w-3 h-3"><use href="#icon-check-circle"/></svg>{{ product.trust_label }}
+                    </p>
+                    <div class="flex items-center gap-2 mt-3">
+                        <span class="font-bold text-gray-900">{{ product.price|floatformat:0|intcomma }} RWF</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3"><use href="#icon-package"/></svg>
+                <p class="text-gray-500">No local stock products yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-14 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <h2 class="font-display text-2xl font-bold">How It Works</h2>
+            <p class="text-gray-500 mt-2">From any global product link to your door in Kigali</p>
+        </div>
+        <div class="grid md:grid-cols-4 gap-6">
+            <div class="text-center p-6 bg-white rounded-2xl border border-gray-100">
+                <div class="w-14 h-14 rounded-xl bg-brand-100 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-brand-600"><use href="#icon-link"/></svg>
+                </div>
+                <h4 class="font-semibold mb-2">1. Paste Link</h4>
+                <p class="text-sm text-gray-500">Paste any product URL from Alibaba, Amazon, eBay, or Trendyol</p>
+            </div>
+            <div class="text-center p-6 bg-white rounded-2xl border border-gray-100">
+                <div class="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="calculator" class="w-7 h-7 text-blue-600"></i>
+                </div>
+                <h4 class="font-semibold mb-2">2. Auto Price</h4>
+                <p class="text-sm text-gray-500">System calculates shipping, service fee, and exchange rate to RWF</p>
+            </div>
+            <div class="text-center p-6 bg-white rounded-2xl border border-gray-100">
+                <div class="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-7 h-7 text-green-600"><use href="#icon-zap"/></svg>
+                </div>
+                <h4 class="font-semibold mb-2">3. Pay with MoMo</h4>
+                <p class="text-sm text-gray-500">Pay instantly with MTN Mobile Money or Airtel Money</p>
+            </div>
+            <div class="text-center p-6 bg-white rounded-2xl border border-gray-100">
+                <div class="w-14 h-14 rounded-xl bg-pink-100 flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="truck" class="w-7 h-7 text-pink-600"></i>
+                </div>
+                <h4 class="font-semibold mb-2">4. Delivered</h4>
+                <p class="text-sm text-gray-500">Product ships to Kigali. Track status from order to delivery</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Payment Methods -->
+<section class="py-8 bg-white border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-sm text-gray-400 mb-4">Accepted Payment Methods</p>
+        <div class="flex items-center justify-center gap-6 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-lg">
+                <svg class="w-5 h-5 text-green-600"><use href="#icon-zap"/></svg>
+                <span class="text-sm font-semibold text-green-700">MTN MoMo</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-red-50 rounded-lg">
+                <svg class="w-5 h-5 text-red-600"><use href="#icon-zap"/></svg>
+                <span class="text-sm font-semibold text-red-700">Airtel Money</span>
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg">
+                <i data-lucide="banknote" class="w-5 h-5 text-gray-600"></i>
+                <span class="text-sm font-semibold text-gray-700">Cash on Delivery</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

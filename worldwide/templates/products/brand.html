@@ -1,0 +1,50 @@
+{% extends "layouts/base.html" %}
+{% block title %}{{ brand.name }} - WorldWide{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center gap-4 mb-8">
+        {% if brand.logo %}
+        <img src="{{ brand.logo.url }}" alt="" class="w-16 h-16 rounded-xl object-cover">
+        {% endif %}
+        <div>
+            <h1 class="font-display text-3xl font-bold">{{ brand.name }}</h1>
+            {% if brand.description %}
+            <p class="text-gray-500 mt-1">{{ brand.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if products %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+        <div class="group bg-white rounded-2xl border border-gray-100 overflow-hidden card-hover">
+            <a href="{{ product.get_absolute_url }}" class="block relative aspect-square overflow-hidden bg-gray-100">
+                {% with img=product.images.all|first %}
+                {% if img %}
+                <img src="{{ img.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-50 to-pink-50">
+                    <i data-lucide="image" class="w-12 h-12 text-gray-300"></i>
+                </div>
+                {% endif %}
+                {% endwith %}
+            </a>
+            <div class="p-4">
+                <a href="{{ product.get_absolute_url }}">
+                    <h3 class="font-medium text-sm text-gray-800 hover:text-brand-600 transition-colors line-clamp-2">{{ product.name }}</h3>
+                </a>
+                <div class="flex items-center gap-2 mt-3">
+                    <span class="font-bold text-gray-900">${{ product.price }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-20">
+        <p class="text-gray-500">No products from this brand yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

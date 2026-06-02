@@ -1,0 +1,36 @@
+{% extends "layouts/base.html" %}
+{% block title %}Shipping Methods - WorldWide{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+        <h1 class="font-display text-4xl font-bold mb-4">Shipping Methods</h1>
+        <p class="text-gray-500">Choose the best shipping option for your needs.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        {% for method in methods %}
+        <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-xl bg-brand-100 flex items-center justify-center">
+                    <i data-lucide="truck" class="w-6 h-6 text-brand-600"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold">{{ method.name }}</h3>
+                    <p class="text-sm text-gray-500">{{ method.zone.name }}</p>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500">{{ method.estimated_days }}</span>
+                <span class="font-bold text-lg">{% if method.price == 0 %}FREE{% else %}${{ method.price }}{% endif %}</span>
+            </div>
+            {% if method.free_above > 0 %}
+            <p class="text-xs text-green-600 mt-2">Free for orders above ${{ method.free_above }}</p>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p class="text-gray-500 col-span-2 text-center py-12">No shipping methods configured yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

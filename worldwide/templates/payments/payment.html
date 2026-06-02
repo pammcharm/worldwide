@@ -1,0 +1,123 @@
+{% extends "layouts/base.html" %}
+{% load static humanize %}
+
+{% block title %}Payment - Order {{ order.order_number }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="mb-8">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-semibold mb-3">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+            Rwanda Payment
+        </span>
+        <h1 class="font-display text-3xl font-bold">How would you like to pay?</h1>
+        <p class="text-gray-500 mt-2">Order {{ order.order_number }} - {{ order.total|floatformat:0|intcomma }} RWF</p>
+    </div>
+
+    <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
+        <form method="post" id="payment-form" class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            {% csrf_token %}
+
+            <h2 class="font-semibold text-lg mb-4">Choose Mobile Money provider</h2>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <label class="payment-card group cursor-pointer rounded-2xl border-2 p-5 transition-all {% if selected_method == 'mtn_momo' %}border-yellow-400 bg-yellow-50{% else %}border-gray-200 hover:border-yellow-300{% endif %}" data-method-card="mtn_momo">
+                    <input type="radio" name="payment_method" value="mtn_momo" class="sr-only" {% if selected_method == 'mtn_momo' %}checked{% endif %}>
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-yellow-300 text-blue-900 flex items-center justify-center font-black text-sm shadow-sm">
+                            MTN
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-900">MTN MoMo</p>
+                            <p class="text-sm text-gray-500 mt-1">Use your MTN Rwanda Mobile Money number.</p>
+                            <span class="inline-flex mt-3 px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-bold">Recommended</span>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="payment-card group cursor-pointer rounded-2xl border-2 p-5 transition-all {% if selected_method == 'airtel_money' %}border-red-500 bg-red-50{% else %}border-gray-200 hover:border-red-300{% endif %}" data-method-card="airtel_money">
+                    <input type="radio" name="payment_method" value="airtel_money" class="sr-only" {% if selected_method == 'airtel_money' %}checked{% endif %}>
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-red-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
+                            airtel
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-900">Airtel Money</p>
+                            <p class="text-sm text-gray-500 mt-1">Use your Airtel Money number in Rwanda.</p>
+                            <span class="inline-flex mt-3 px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">Fast checkout</span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <div id="phone-input-section" class="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+                <label class="block text-sm font-semibold text-blue-900 mb-2">
+                    Mobile Money phone number
+                </label>
+                <div class="relative">
+                    <i data-lucide="phone" class="w-4 h-4 text-blue-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                    <input type="tel" name="phone_number" placeholder="07XXXXXXXX or +2507XXXXXXXX" value="{{ payment.phone_number|default:order.phone }}"
+                        class="w-full pl-10 pr-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none">
+                </div>
+                <p class="text-xs text-blue-700 mt-2">After you click Proceed, the provider integration will send the next confirmation step to this phone number.</p>
+            </div>
+
+            <button type="submit" class="w-full mt-6 px-6 py-4 btn-primary text-white font-semibold rounded-xl flex items-center justify-center gap-2">
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                Proceed to Pay {{ order.total|floatformat:0|intcomma }} RWF
+            </button>
+        </form>
+
+        <aside class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
+                <i data-lucide="receipt" class="w-5 h-5 text-brand-500"></i>
+                Order Summary
+            </h2>
+            <div class="space-y-3">
+                {% for item in order.items.all %}
+                <div class="flex justify-between gap-4 pb-3 border-b border-gray-50">
+                    <div>
+                        <p class="text-sm font-medium text-gray-800">{{ item.product_name }}</p>
+                        <p class="text-xs text-gray-400">Qty: {{ item.quantity }}</p>
+                    </div>
+                    <span class="text-sm font-semibold whitespace-nowrap">{{ item.total|floatformat:0|intcomma }} RWF</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-100">
+                <span class="font-semibold">Total</span>
+                <span class="text-xl font-bold text-brand-600">{{ order.total|floatformat:0|intcomma }} RWF</span>
+            </div>
+            <div class="mt-5 rounded-xl bg-gray-50 p-4 text-xs text-gray-500">
+                Your payment record will stay pending until the provider callback confirms success.
+            </div>
+        </aside>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const cards = document.querySelectorAll("[data-method-card]");
+const radios = document.querySelectorAll('input[name="payment_method"]');
+
+function refreshPaymentCards(selected) {
+    cards.forEach(card => {
+        const method = card.dataset.methodCard;
+        card.classList.remove("border-yellow-400", "bg-yellow-50", "border-red-500", "bg-red-50", "border-gray-200");
+        if (method === selected && method === "mtn_momo") {
+            card.classList.add("border-yellow-400", "bg-yellow-50");
+        } else if (method === selected && method === "airtel_money") {
+            card.classList.add("border-red-500", "bg-red-50");
+        } else {
+            card.classList.add("border-gray-200");
+        }
+    });
+}
+
+radios.forEach(radio => {
+    radio.addEventListener("change", () => refreshPaymentCards(radio.value));
+});
+</script>
+{% endblock %}

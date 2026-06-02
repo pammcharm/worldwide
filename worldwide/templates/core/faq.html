@@ -1,0 +1,25 @@
+{% extends "layouts/base.html" %}
+{% block title %}FAQ - WorldWide{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+        <h1 class="font-display text-4xl font-bold mb-4">Frequently Asked Questions</h1>
+        <p class="text-gray-500">Find answers to common questions below.</p>
+    </div>
+    
+    <div class="space-y-4" x-data="{ open: null }">
+        {% for faq in "123456" %}
+        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <button @click="open = open === {{ forloop.counter }} ? null : {{ forloop.counter }}" class="w-full flex items-center justify-between p-6 text-left">
+                <span class="font-medium text-gray-800">How does shipping work?</span>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform" :class="open === {{ forloop.counter }} && "rotate-180""></i>
+            </button>
+            <div x-show="open === {{ forloop.counter }}" x-collapse class="px-6 pb-6">
+                <p class="text-sm text-gray-500 leading-relaxed">We offer free shipping on orders over $50. Standard delivery takes 3-5 business days. Express shipping is available for faster delivery.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

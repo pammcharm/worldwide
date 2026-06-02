@@ -1,0 +1,429 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site_settings.site_name|default:"WorldWide" }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_desc %}Everything You Need, Delivered Worldwide{% endblock %}">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            950: '#1e1b4b',
+                        },
+                        accent: {
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-down': 'slideDown 0.3s ease-out',
+                        'scale-in': 'scaleIn 0.3s ease-out',
+                        'bounce-subtle': 'bounceSubtle 2s infinite',
+                        'shimmer': 'shimmer 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons - loaded with preload for speed -->
+    <link rel="preload" href="https://unpkg.com/lucide@latest/dist/umd/lucide.js" as="script">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+
+    <!-- Critical inline SVG icons - render instantly without waiting for JS -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+        <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+        <symbol id="icon-shopping-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></symbol>
+        <symbol id="icon-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+        <symbol id="icon-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+        <symbol id="icon-plane" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></symbol>
+        <symbol id="icon-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></symbol>
+        <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+        <symbol id="icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+        <symbol id="icon-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></symbol>
+        <symbol id="icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+        <symbol id="icon-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+        <symbol id="icon-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    </svg>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+        .btn-accent {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+            transition: all 0.3s ease;
+        }
+        .btn-accent:hover {
+            background: linear-gradient(135deg, #db2777, #e11d48);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.4);
+        }
+        .shimmer-bg {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background-size: 200% 100%;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a5b4fc; }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="font-sans bg-gray-50 text-gray-900 antialiased">
+    
+    <!-- Announcement Bar -->
+    <div class="bg-gradient-to-r from-brand-600 via-brand-500 to-accent-500 text-white text-center py-2 px-4 text-sm font-medium">
+        <p class="animate-fade-in">
+            <i data-lucide="truck" class="inline w-4 h-4 mr-1"></i>
+            Free shipping on orders over $50! Use code <span class="font-bold">WORLDWIDE</span> for 10% off
+        </p>
+    </div>
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass border-b border-gray-100" x-data="{ mobileMenu: false, searchOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                
+                <!-- Logo -->
+                <a href="{% url "core:home" %}" class="flex items-center gap-2 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-xl transition-shadow overflow-hidden">
+                        <img src="{% static 'images/icon.png' %}" alt="Icon" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                    </div>
+                    <span class="font-display font-bold text-xl tracking-tight">
+                        World<span class="gradient-text">Wide</span>
+                    </span>
+                </a>
+                
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a href="{% url "core:home" %}" class="text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">Home</a>
+                    <a href="{% url "products:list" %}" class="text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">Shop All</a>
+                    <a href="{% url "core:about" %}" class="text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">About</a>
+                    <a href="{% url "core:contact" %}" class="text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">Contact</a>
+                </nav>
+                
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8">
+                    <form action="{% url "search:search" %}" method="GET" class="w-full relative">
+                        <input type="text" name="q" placeholder="Search everything..." 
+                            class="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 bg-gray-50 focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100 transition-all text-sm outline-none">
+                        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                    </form>
+                </div>
+                
+                <!-- Right Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Search Toggle (mobile) -->
+                    <button @click="searchOpen = !searchOpen" class="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-600"></i>
+                    </button>
+                    
+                    <!-- Wishlist -->
+                    {% if user.is_authenticated %}
+                    <a href="{% url "wishlist:detail" %}" class="p-2 rounded-full hover:bg-gray-100 transition-colors relative">
+                        <i data-lucide="heart" class="w-5 h-5 text-gray-600"></i>
+                    </a>
+                    {% endif %}
+                    
+                    <!-- Cart -->
+                    <a href="{% url "cart:detail" %}" class="p-2 rounded-full hover:bg-gray-100 transition-colors relative">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-gray-600"></i>
+                        {% if cart_count > 0 %}
+                        <span class="absolute -top-0.5 -right-0.5 w-5 h-5 bg-accent-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-scale-in">
+                            {{ cart_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+                    
+                    <!-- User Menu -->
+                    {% if user.is_authenticated %}
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+                            {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="" class="w-8 h-8 rounded-full object-cover">
+                            {% else %}
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-accent-400 flex items-center justify-center text-white text-sm font-bold">
+                                {{ user.first_name|first|default:user.username|first|upper }}
+                            </div>
+                            {% endif %}
+                        </button>
+                        <div x-show="open" @click.away="open = false" x-cloak
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <p class="font-semibold text-sm">{{ user.full_name|default:user.username }}</p>
+                                <p class="text-xs text-gray-500">{{ user.email }}</p>
+                            </div>
+                            <a href="{% url "accounts:profile" %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="user" class="w-4 h-4"></i> My Profile
+                            </a>
+                            <a href="{% url "orders:list" %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="package" class="w-4 h-4"></i> My Orders
+                            </a>
+                            <a href="{% url "wishlist:detail" %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="heart" class="w-4 h-4"></i> Wishlist
+                            </a>
+                            <div class="border-t border-gray-100 mt-1 pt-1">
+                                <a href="{% url "accounts:logout" %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
+                                    <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{% url "accounts:login" %}" class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors">
+                        <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+                    </a>
+                    <a href="{% url "accounts:register" %}" class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-white btn-primary rounded-full">
+                        Sign Up
+                    </a>
+                    {% endif %}
+                    
+                    <!-- Mobile Menu Toggle -->
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i data-lucide="menu" class="w-5 h-5 text-gray-600" x-show="!mobileMenu"></i>
+                        <i data-lucide="x" class="w-5 h-5 text-gray-600" x-show="mobileMenu" x-cloak></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenu" x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="lg:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2">
+            <a href="{% url "core:home" %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">Home</a>
+            <a href="{% url "products:list" %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">Shop All</a>
+            <a href="{% url "core:about" %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">About</a>
+            <a href="{% url "core:contact" %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">Contact</a>
+            {% if not user.is_authenticated %}
+            <div class="pt-2 border-t border-gray-100 flex gap-2">
+                <a href="{% url "accounts:login" %}" class="flex-1 text-center px-4 py-2.5 text-sm font-medium text-gray-700 border border-gray-200 rounded-xl hover:bg-gray-50">Sign In</a>
+                <a href="{% url "accounts:register" %}" class="flex-1 text-center px-4 py-2.5 text-sm font-medium text-white btn-primary rounded-xl">Sign Up</a>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+    
+    <!-- Messages -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {% for message in messages %}
+        <div class="flex items-center gap-3 p-4 rounded-xl mb-2 animate-slide-down
+            {% if message.tags == "success" %}bg-green-50 text-green-800 border border-green-200
+            {% elif message.tags == "error" %}bg-red-50 text-red-800 border border-red-200
+            {% elif message.tags == "warning" %}bg-yellow-50 text-yellow-800 border border-yellow-200
+            {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+            <i data-lucide="{% if message.tags == "success" %}check-circle{% elif message.tags == "error" %}x-circle{% elif message.tags == "warning" %}alert-triangle{% else %}info{% endif %}" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="text-sm font-medium">{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <!-- Brand -->
+                <div class="lg:col-span-1">
+                    <a href="{% url "core:home" %}" class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg overflow-hidden">
+                            <img src="{% static 'images/icon.png' %}" alt="Icon" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                        </div>
+                        <span class="font-display font-bold text-xl text-white">World<span class="text-brand-400">Wide</span></span>
+                    </a>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">Your one-stop destination for everything you need. Quality products, delivered worldwide.</p>
+                    <div class="flex gap-3">
+                        <a href="{{ site_settings.facebook_url|default:'#' }}" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors" aria-label="Facebook">
+                            <span class="text-sm font-bold">f</span>
+                        </a>
+                        <a href="{{ site_settings.twitter_url|default:'#' }}" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors" aria-label="X">
+                            <span class="text-sm font-bold">X</span>
+                        </a>
+                        <a href="{{ site_settings.instagram_url|default:'#' }}" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors" aria-label="Instagram">
+                            <i data-lucide="camera" class="w-4 h-4"></i>
+                        </a>
+                        <a href="{{ site_settings.youtube_url|default:'#' }}" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-brand-600 flex items-center justify-center transition-colors" aria-label="YouTube">
+                            <i data-lucide="play" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url "core:home" %}" class="text-sm hover:text-brand-400 transition-colors">Home</a></li>
+                        <li><a href="{% url "products:list" %}" class="text-sm hover:text-brand-400 transition-colors">Shop All</a></li>
+                        <li><a href="{% url "core:about" %}" class="text-sm hover:text-brand-400 transition-colors">About Us</a></li>
+                        <li><a href="{% url "core:contact" %}" class="text-sm hover:text-brand-400 transition-colors">Contact</a></li>
+                        <li><a href="{% url "core:faq" %}" class="text-sm hover:text-brand-400 transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Customer Service -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Customer Service</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url "orders:list" %}" class="text-sm hover:text-brand-400 transition-colors">My Orders</a></li>
+                        <li><a href="{% url "shipping:methods" %}" class="text-sm hover:text-brand-400 transition-colors">Shipping Info</a></li>
+                        <li><a href="#" class="text-sm hover:text-brand-400 transition-colors">Returns & Exchanges</a></li>
+                        <li><a href="#" class="text-sm hover:text-brand-400 transition-colors">Size Guide</a></li>
+                        <li><a href="#" class="text-sm hover:text-brand-400 transition-colors">Track Order</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Stay Updated</h4>
+                    <p class="text-sm text-gray-400 mb-4">Subscribe for exclusive deals and updates.</p>
+                    <form class="space-y-2">
+                        <input type="email" placeholder="Your email" class="w-full px-4 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-sm text-white placeholder-gray-500 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
+                        <button type="submit" class="w-full px-4 py-2.5 btn-primary text-white text-sm font-medium rounded-xl">Subscribe</button>
+                    </form>
+                    <div class="flex items-center gap-4 mt-6">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-green-400"></i>
+                        <span class="text-xs text-gray-400">Secure Payments</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-sm text-gray-500">&copy; 2026 WorldWide. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <i data-lucide="credit-card" class="w-8 h-5 text-gray-600"></i>
+                    <i data-lucide="wallet" class="w-8 h-5 text-gray-600"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Initialize Lucide Icons ASAP -->
+    <script>
+        (function() {
+            function initIcons() {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                } else {
+                    setTimeout(initIcons, 50);
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initIcons);
+            } else {
+                initIcons();
+            }
+        })();
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

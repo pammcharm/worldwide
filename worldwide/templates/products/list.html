@@ -1,0 +1,193 @@
+{% extends "layouts/base.html" %}
+{% load static humanize %}
+
+{% block title %}Shop All Products - {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="font-display text-3xl font-bold">Shop All Products</h1>
+        <p class="text-gray-500 mt-2">
+            Browse our catalog — local stock for instant delivery or import items from Alibaba, Amazon & more
+        </p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="flex flex-wrap items-center gap-3 mb-8">
+        <a href="{% url 'products:list' %}" class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if not current_category and not request.GET.type %}bg-brand-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+            All
+        </a>
+        <a href="{% url 'products:list' %}?type=local" class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if request.GET.type == 'local' %}bg-green-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+            <i data-lucide="zap" class="inline w-3.5 h-3.5 mr-1"></i>Local Stock
+        </a>
+        <a href="{% url 'products:list' %}?type=import" class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if request.GET.type == 'import' %}bg-blue-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+            <i data-lucide="plane" class="inline w-3.5 h-3.5 mr-1"></i>Import Items
+        </a>
+        {% for cat in categories %}
+        <a href="{% url 'products:list' %}?category={{ cat.slug }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}" class="px-4 py-2 rounded-full text-sm font-medium transition-colors {% if current_category == cat %}bg-brand-600 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+            {% if cat.icon %}<i data-lucide="{{ cat.icon }}" class="inline w-3.5 h-3.5 mr-1"></i>{% endif %}{{ cat.name }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Product Grid -->
+    {% if products %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for product in products %}
+        <div class="group bg-white rounded-2xl border border-gray-100 overflow-hidden card-hover">
+            <a href="{{ product.get_absolute_url }}" class="block relative aspect-square overflow-hidden bg-gray-100">
+                {% with primary_image=product.images.all|first %}
+                {% if primary_image and primary_image.image %}
+                    <img 
+                        src="{{ primary_image.image.url }}" 
+                        alt="{{ product.name }}" 
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 {% if product.is_import %}filter grayscale blur-[1px]{% endif %}"
+                        onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\"w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-50 to-pink-50\"><i data-lucide=\"image\" class=\"w-12 h-12 text-gray-300\"></i></div>'">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-50 to-pink-50">
+                    <div class="text-center">
+                        {% if product.category.icon %}
+                        <i data-lucide="{{ product.category.icon }}" class="w-12 h-12 text-gray-400 mx-auto mb-2"></i>
+                        {% else %}
+                        <i data-lucide="image" class="w-12 h-12 text-gray-300 mx-auto"></i>
+                        {% endif %}
+                        <p class="text-xs text-gray-500 mt-1">{{ product.name|truncatewords:3 }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <!-- Trust Label Badge -->
+                {% if product.is_import %}
+                <span class="absolute top-3 left-3 px-2.5 py-1 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                    <i data-lucide="plane" class="w-3 h-3"></i>Import
+                </span>
+                {% else %}
+                <span class="absolute top-3 left-3 px-2.5 py-1 bg-green-600 text-white text-xs font-bold rounded-full flex items-center gap-1">
+                    <i data-lucide="zap" class="w-3 h-3"></i>Local
+                </span>
+                {% endif %}
+
+                {% if product.is_new %}
+                <span class="absolute top-3 right-3 px-2.5 py-1 bg-brand-500 text-white text-xs font-bold rounded-full">NEW</span>
+                {% endif %}
+                {% if product.discount_percent > 0 %}
+                <span class="absolute top-3 right-3 px-2.5 py-1 bg-red-500 text-white text-xs font-bold rounded-full">-{{ product.discount_percent }}%</span>
+                {% endif %}
+
+                <!-- Quick Actions -->
+                <div class="absolute bottom-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button class="w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-brand-50 hover:text-brand-600 transition-colors">
+                        <i data-lucide="heart" class="w-4 h-4"></i>
+                    </button>
+                    <button class="w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-brand-50 hover:text-brand-600 transition-colors quick-add" data-product-id="{{ product.id }}">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </a>
+
+            <div class="p-4">
+                <p class="text-xs text-gray-400 mb-1">{{ product.category.name }}</p>
+                <a href="{{ product.get_absolute_url }}" class="block">
+                    <h3 class="font-medium text-sm text-gray-800 hover:text-brand-600 transition-colors line-clamp-2">{{ product.name }}</h3>
+                </a>
+
+                <!-- Trust Label -->
+                <p class="text-xs mt-1.5 {% if product.is_import %}text-blue-600{% else %}text-green-600{% endif %} flex items-center gap-1">
+                    {% if product.is_import %}
+                    <i data-lucide="clock" class="w-3 h-3"></i>
+                    {% else %}
+                    <i data-lucide="check-circle" class="w-3 h-3"></i>
+                    {% endif %}
+                    {{ product.trust_label }}
+                </p>
+
+                <div class="flex items-center gap-1 mt-2">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= product.rating_avg|default:0 %}
+                        <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i>
+                        {% else %}
+                        <i data-lucide="star" class="w-3 h-3 text-gray-200"></i>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="text-xs text-gray-400 ml-1">({{ product.rating_count }})</span>
+                </div>
+
+                <div class="flex items-center gap-2 mt-3">
+                    <span class="font-bold text-gray-900">
+                        {% if product.calculated_price_rwf %}
+                            {{ product.calculated_price_rwf|floatformat:0|intcomma }} RWF
+                        {% else %}
+                            {{ product.price|floatformat:0|intcomma }} RWF
+                        {% endif %}
+                    </span>
+                    {% if product.compare_at_price %}
+                    <span class="text-sm text-gray-400 line-through">{{ product.compare_at_price|floatformat:0|intcomma }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Price Breakdown for Imports -->
+                {% if product.is_import and product.price_breakdown %}
+                <div class="mt-2 p-2 bg-blue-50 rounded-lg text-xs text-blue-700">
+                    <p class="font-semibold mb-1">Price Breakdown:</p>
+                    <p>Item: ${{ product.price_breakdown.item_cost_usd }} | Shipping: ${{ product.price_breakdown.shipping_cost_usd|floatformat:2 }} | Fee: ${{ product.price_breakdown.service_fee_usd|floatformat:2 }}</p>
+                    <p class="text-blue-500">Rate: {{ product.price_breakdown.exchange_rate }} RWF/USD</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if products.has_other_pages %}
+    <div class="flex items-center justify-center gap-2 mt-12">
+        {% if products.has_previous %}
+        <a href="?page={{ products.previous_page_number }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+        {% endif %}
+        <span class="px-4 py-2 text-sm text-gray-500">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+        {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}{% if request.GET.type %}&type={{ request.GET.type }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-20">
+        <i data-lucide="package" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+        <h3 class="text-lg font-semibold text-gray-700">No products found</h3>
+        <p class="text-gray-500 mt-2">Check back soon for new arrivals!</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll(".quick-add").forEach(btn => {
+    btn.addEventListener("click", function(e) {
+        e.preventDefault();
+        const productId = this.dataset.productId;
+        fetch("{% url 'cart:add' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: "product_id=" + productId + "&quantity=1"
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                const badge = document.querySelector(".bg-accent-500.text-white.text-xs");
+                if (badge) badge.textContent = data.cart_count;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

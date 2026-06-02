@@ -1,0 +1,29 @@
+{% extends "layouts/base.html" %}
+{% block title %}{{ title }} - WorldWide{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="font-display text-3xl font-bold mb-8">{{ title }}</h1>
+    
+    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+        <form method="POST" class="space-y-5">
+            {% csrf_token %}
+            <div class="grid sm:grid-cols-2 gap-4">
+                {% for field in form %}
+                <div class="{% if field.name in "street_address,apartment" %}sm:col-span-2{% endif %}">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="flex gap-3">
+                <button type="submit" class="px-8 py-3 btn-primary text-white font-semibold rounded-xl">Save Address</button>
+                <a href="{% url "accounts:profile" %}" class="px-8 py-3 border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

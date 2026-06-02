@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+{% block title %}About Us - WorldWide{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-16">
+        <h1 class="font-display text-4xl font-bold mb-4">About <span class="gradient-text">WorldWide</span></h1>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto">We are on a mission to make quality products accessible to everyone, everywhere in the world.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8 mb-16">
+        <div class="text-center p-8 rounded-2xl bg-brand-50">
+            <div class="w-16 h-16 rounded-2xl bg-brand-500 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="globe" class="w-8 h-8 text-white"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Global Reach</h3>
+            <p class="text-sm text-gray-500">Delivering to 190+ countries worldwide with reliable shipping partners.</p>
+        </div>
+        <div class="text-center p-8 rounded-2xl bg-pink-50">
+            <div class="w-16 h-16 rounded-2xl bg-pink-500 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Quality Guaranteed</h3>
+            <p class="text-sm text-gray-500">Every product is verified for quality before it reaches your doorstep.</p>
+        </div>
+        <div class="text-center p-8 rounded-2xl bg-green-50">
+            <div class="w-16 h-16 rounded-2xl bg-green-500 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="headphones" class="w-8 h-8 text-white"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">24/7 Support</h3>
+            <p class="text-sm text-gray-500">Our customer support team is always here to help you.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

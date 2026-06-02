@@ -1,0 +1,50 @@
+{% extends "layouts/base.html" %}
+{% block title %}Create Account - WorldWide{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-16">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <a href="{% url "core:home" %}" class="inline-flex items-center gap-2 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg">W</div>
+                <span class="font-display font-bold text-xl">World<span class="gradient-text">Wide</span></span>
+            </a>
+            <h1 class="font-display text-2xl font-bold">Create your account</h1>
+            <p class="text-gray-500 mt-1">Join WorldWide and start shopping</p>
+        </div>
+        
+        <div class="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
+            {% if supabase_auth_enabled %}
+            <div class="mb-6">
+                {% include "accounts/supabase_oauth.html" %}
+                <div class="flex items-center gap-3 my-6">
+                    <div class="h-px bg-gray-100 flex-1"></div>
+                    <span class="text-xs font-semibold text-gray-400">or create with email</span>
+                    <div class="h-px bg-gray-100 flex-1"></div>
+                </div>
+            </div>
+            {% endif %}
+            <form method="POST" class="space-y-5">
+                {% csrf_token %}
+                {% for field in form %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <p class="text-xs text-gray-400 mt-1">{{ field.help_text }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="w-full py-3.5 btn-primary text-white font-semibold rounded-xl">Create Account</button>
+            </form>
+            <p class="text-xs text-gray-400 text-center mt-4">By signing up, you agree to our <a href="#" class="underline">Terms</a> and <a href="#" class="underline">Privacy Policy</a></p>
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">Already have an account? <a href="{% url "accounts:login" %}" class="text-brand-600 font-medium hover:underline">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

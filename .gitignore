@@ -1,0 +1,55 @@
+# Environment variables - NEVER commit these
+.env
+.env.local
+.env.*.local
+*.env
+worldwide/.env
+worldwide/keyhide
+
+# Database files
+worldwide/db.sqlite3
+worldwide/db.sqlite3-journal
+
+# Django
+worldwide/staticfiles/
+worldwide/media/
+worldwide/logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+.vscode-remote/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+.env.swp
+
+# Node (if used for frontend build)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Celery
+celerybeat-schedule
+
